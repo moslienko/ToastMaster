@@ -12,7 +12,8 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
+        ToastView.shared.show(message: "Hello!", controller: self, icon: nil, linkTapped: nil)
     }
 
 

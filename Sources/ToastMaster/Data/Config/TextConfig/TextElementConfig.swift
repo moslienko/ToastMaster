@@ -23,7 +23,7 @@ public struct TextElementConfig {
     }
     
     public static func makeDefaultMessageConfig() -> TextElementConfig {
-        TextElementConfig(font: messageFont, color: linkColor)
+        TextElementConfig(font: messageFont, color: textColor)
     }
     
     public static func makeDefaultHeaderLinkConfig() -> TextElementConfig {
