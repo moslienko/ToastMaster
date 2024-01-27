@@ -72,12 +72,29 @@ enum ToastParams {
         }
     }
     
+    enum ToastPosition: Int, CaseIterable, ToastParamsSegment {
+        case top = 0
+        case bottom = 1
+        
+        static var id: Int = 104
+        static var groupName: String = "Toast position"
+        
+        var fieldName: String {
+            switch self {
+            case .top:
+                return "Top"
+            case .bottom:
+                return "Bottom"
+            }
+        }
+    }
+    
     enum ButtonOptions: Int, CaseIterable, ToastParamsSegment {
         case onlyLink = 0
         case onlyAction = 1
         case both = 2
         
-        static var id: Int = 104
+        static var id: Int = 105
         static var groupName: String = "Action Button"
         
         var fieldName: String {
@@ -88,6 +105,26 @@ enum ToastParams {
                 return "Only as action"
             case .both:
                 return "Display both"
+            }
+        }
+    }
+    
+    enum ContainerOptions: Int, CaseIterable, ToastParamsSegment {
+        case `default` = 0
+        case withBlur = 1
+        case colorBackground = 2
+        
+        static var id: Int = 106
+        static var groupName: String = "Container style"
+        
+        var fieldName: String {
+            switch self {
+            case .default:
+                return "Default"
+            case .withBlur:
+                return "Blur"
+            case .colorBackground:
+                return "Colored"
             }
         }
     }

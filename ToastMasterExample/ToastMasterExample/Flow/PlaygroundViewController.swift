@@ -42,7 +42,6 @@ private extension PlaygroundViewController {
         bigButton.layer.cornerRadius = 15.0
         bigButton.addTarget(self, action: #selector(bigButtonTapped), for: .touchUpInside)
         
-        
         stackView.addArrangedSubview(self.label(text: ToastParams.TextContent.groupName))
         stackView.addArrangedSubview(self.segment(items: ToastParams.TextContent.allCases.map({ $0.fieldName }), selectedIndex: self.viewModel.textOptions.rawValue, id: ToastParams.TextContent.id))
         
@@ -52,8 +51,14 @@ private extension PlaygroundViewController {
         stackView.addArrangedSubview(self.label(text: ToastParams.ToastLayout.groupName))
         stackView.addArrangedSubview(self.segment(items: ToastParams.ToastLayout.allCases.map({ $0.fieldName }), selectedIndex: 1, id: ToastParams.ToastLayout.id))
         
+        stackView.addArrangedSubview(self.label(text: ToastParams.ToastPosition.groupName))
+        stackView.addArrangedSubview(self.segment(items: ToastParams.ToastPosition.allCases.map({ $0.fieldName }), selectedIndex: 1, id: ToastParams.ToastPosition.id))
+        
         stackView.addArrangedSubview(self.label(text: ToastParams.ButtonOptions.groupName))
         stackView.addArrangedSubview(self.segment(items: ToastParams.ButtonOptions.allCases.map({ $0.fieldName }), selectedIndex: 1, id: ToastParams.ButtonOptions.id))
+        
+        stackView.addArrangedSubview(self.label(text: ToastParams.ContainerOptions.groupName))
+        stackView.addArrangedSubview(self.segment(items: ToastParams.ContainerOptions.allCases.map({ $0.fieldName }), selectedIndex: 0, id: ToastParams.ContainerOptions.id))
         
         scrollView.addSubview(stackView)
         view.addSubview(scrollView)
@@ -142,6 +147,16 @@ private extension PlaygroundViewController {
             case .vertical:
                 self.viewModel.toastConfig.layout = .vertical
             }
+        case ToastParams.ToastPosition.id:
+            guard let val = ToastParams.ToastPosition(rawValue: sender.selectedSegmentIndex) else {
+                return
+            }
+            switch val {
+            case .top:
+                self.viewModel.toastConfig.displayConfig.position = .top
+            case .bottom:
+                self.viewModel.toastConfig.displayConfig.position = .bottom
+            }
         case ToastParams.ButtonOptions.id:
             guard let val = ToastParams.ButtonOptions(rawValue: sender.selectedSegmentIndex) else {
                 return
@@ -156,6 +171,21 @@ private extension PlaygroundViewController {
                 self.viewModel.isShowLinks = false
             case .both:
                 self.viewModel.isShowLinks = true
+            }
+        case ToastParams.ContainerOptions.id:
+            guard let val = ToastParams.ContainerOptions(rawValue: sender.selectedSegmentIndex) else {
+                return
+            }
+            switch val {
+            case .default:
+                self.viewModel.toastConfig.containerConfig = .makeDefaultConfig()
+            case .withBlur:
+                self.viewModel.toastConfig.containerConfig = .makeDefaultConfig()
+                self.viewModel.toastConfig.containerConfig.isNeedBlur = true
+                self.viewModel.toastConfig.containerConfig.blurStyle = .regular
+            case .colorBackground:
+                self.viewModel.toastConfig.containerConfig.backgroundColor = .systemRed
+                self.viewModel.toastConfig.containerConfig.cornerRadius = 4.0
             }
         default:
             break

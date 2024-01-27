@@ -24,8 +24,6 @@ public class ToastView: NSObject {
     // MARK: - UI components
     private(set) lazy var toastContainer: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(red: 0.175, green: 0.175, blue: 0.175, alpha: 0.8)
-        view.layer.cornerRadius = 16.0
         view.clipsToBounds = true
         view.alpha = 0.0
         
@@ -75,6 +73,9 @@ public class ToastView: NSObject {
         case .vertical:
             self.contentStackView.axis = .vertical
         }
+        
+        self.toastContainer.backgroundColor = config.containerConfig.backgroundColor
+        self.toastContainer.layer.cornerRadius = config.containerConfig.cornerRadius
         
         self.actionButton.setTitle(actionButtonTitle, for: [])
         self.actionButton.isHidden = actionButtonTitle == nil
@@ -160,10 +161,20 @@ public class ToastView: NSObject {
         iconImageView.translatesAutoresizingMaskIntoConstraints = false
         self.contentStackView.translatesAutoresizingMaskIntoConstraints = false
         
+#warning("todo position to config + safearea")
+        var positionConstraint: NSLayoutConstraint {
+            switch self.config.displayConfig.position {
+            case .top:
+                return toastContainer.topAnchor.constraint(equalTo: controller.view.topAnchor, constant: 55)
+            case .bottom:
+                return toastContainer.bottomAnchor.constraint(equalTo: controller.view.bottomAnchor, constant: -99)
+            }
+        }
+        
         NSLayoutConstraint.activate([
             toastContainer.leadingAnchor.constraint(equalTo: controller.view.leadingAnchor, constant: 16),
             toastContainer.trailingAnchor.constraint(equalTo: controller.view.trailingAnchor, constant: -16),
-            toastContainer.bottomAnchor.constraint(equalTo: controller.view.bottomAnchor, constant: -99),
+            positionConstraint,
             
             iconImageView.leadingAnchor.constraint(equalTo: toastContainer.leadingAnchor, constant: 16),
             iconImageView.centerYAnchor.constraint(equalTo: toastContainer.centerYAnchor),
@@ -177,12 +188,21 @@ public class ToastView: NSObject {
             self.contentStackView.leadingAnchor.constraint(equalTo: toastContainer.leadingAnchor, constant:  icon != nil ? 54 : 16)
         ])
         
-        let slideDown = UISwipeGestureRecognizer(target: self, action: #selector(dismissView(gesture:)))
-        slideDown.direction = .down
-        slideDown.delegate = self
-        self.toastContainer.addGestureRecognizer(slideDown)
-        self.toastContainer.isUserInteractionEnabled = true
+        if let dismissGesture = self.toastContainer.gestureRecognizers?.first(where: { $0 is UISwipeGestureRecognizer }) as? UISwipeGestureRecognizer {
+            self.toastContainer.removeGestureRecognizer(dismissGesture)
+        }
         
+        let dismissGesture = UISwipeGestureRecognizer(target: self, action: #selector(dismissView(gesture:)))
+        switch self.config.displayConfig.position {
+        case .top:
+            dismissGesture.direction = .up
+        case .bottom:
+            dismissGesture.direction = .down
+        }
+        dismissGesture.delegate = self
+        
+        self.toastContainer.addGestureRecognizer(dismissGesture)
+        self.toastContainer.isUserInteractionEnabled = true
         
         self.presentToast()
     }
@@ -192,18 +212,61 @@ public class ToastView: NSObject {
 private extension ToastView {
     
     func presentToast() {
+        var initialFrame: CGRect {
+            switch self.config.displayConfig.position {
+            case .top:
+                return CGRect(
+                    x: 0,
+                    y: 0,
+                    width: UIScreen.main.bounds.width,
+                    height: self.toastContainer.frame.height
+                )
+            case .bottom:
+                return CGRect(
+                    x: 0,
+                    y: UIScreen.main.bounds.height,
+                    width: UIScreen.main.bounds.width,
+                    height: self.toastContainer.frame.height
+                )
+            }
+        }
+        
+        self.toastContainer.frame = initialFrame
+        self.toastContainer.alpha = 0.0
+        
+        var finalFrame: CGRect {
+            switch self.config.displayConfig.position {
+            case .top:
+                return CGRect(
+                    x: 0,
+                    y: UIScreen.main.bounds.height - self.toastContainer.frame.height - 200,
+                    width: UIScreen.main.bounds.width,
+                    height: self.toastContainer.frame.height
+                )
+            case .bottom:
+                return CGRect(
+                    x: 0,
+                    y: UIScreen.main.bounds.height - self.toastContainer.frame.height,
+                    width: UIScreen.main.bounds.width,
+                    height: self.toastContainer.frame.height
+                )
+            }
+        }
+        
         UIView.animate(
             withDuration: 0.5,
             delay: 0.0,
             options: .curveEaseIn,
             animations: {
+                self.toastContainer.frame = finalFrame
                 self.toastContainer.alpha = 1.0
-            }, completion: { _ in
+            },
+            completion: { _ in
                 let workItem = DispatchWorkItem { [weak self] in
                     self?.dissmissToast(withAnimation: true, isAutoDismiss: true)
                 }
                 self.dismissWorkItem = workItem
-                DispatchQueue.main.asyncAfter(deadline: .now() + 53.5, execute: workItem)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3.5, execute: workItem)
             }
         )
     }
@@ -215,8 +278,15 @@ private extension ToastView {
                 delay: 0.0,
                 options: .curveEaseOut,
                 animations: {
+                    switch self.config.displayConfig.position {
+                    case .top:
+                        self.toastContainer.frame.origin.y = 0.0
+                    case .bottom:
+                        self.toastContainer.frame.origin.y += self.toastContainer.frame.height
+                    }
                     self.toastContainer.alpha = 0.0
-                }, completion: { _ in
+                },
+                completion: { _ in
                     self.toastContainer.removeFromSuperview()
                 }
             )
@@ -224,9 +294,9 @@ private extension ToastView {
             self.toastContainer.removeFromSuperview()
         }
         
-        if isAutoDismiss {
-            dismissWorkItem?.cancel()
-        }
+        //if isAutoDismiss {
+        dismissWorkItem?.cancel()
+        // }
     }
 }
 
