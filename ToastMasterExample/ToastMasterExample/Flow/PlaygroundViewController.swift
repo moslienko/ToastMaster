@@ -181,8 +181,9 @@ private extension PlaygroundViewController {
                 self.viewModel.toastConfig.containerConfig = .makeDefaultConfig()
             case .withBlur:
                 self.viewModel.toastConfig.containerConfig = .makeDefaultConfig()
+                self.viewModel.toastConfig.containerConfig.backgroundColor = .black.withAlphaComponent(0.5)
                 self.viewModel.toastConfig.containerConfig.isNeedBlur = true
-                self.viewModel.toastConfig.containerConfig.blurStyle = .regular
+                self.viewModel.toastConfig.containerConfig.blurStyle = .dark
             case .colorBackground:
                 self.viewModel.toastConfig.containerConfig.backgroundColor = .systemRed
                 self.viewModel.toastConfig.containerConfig.cornerRadius = 4.0

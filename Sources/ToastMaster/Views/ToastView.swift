@@ -93,6 +93,15 @@ public class ToastView: NSObject {
         self.contentStackView.arrangedSubviews.forEach({ $0.removeFromSuperview() })
         self.textStackView.arrangedSubviews.forEach({ $0.removeFromSuperview() })
         
+        if self.config.containerConfig.isNeedBlur {
+            let blurEffect = UIBlurEffect(style: self.config.containerConfig.blurStyle ?? .dark)
+            let blurView = UIVisualEffectView(effect: blurEffect)
+            blurView.frame = self.toastContainer.bounds
+            blurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            blurView.layer.opacity = 0.75
+            self.toastContainer.addSubview(blurView)
+        }
+        
         let headerTextView: UITextView = {
             let textView = UITextView()
             textView.attributedText = header?.htmlConvertToAttributedString
