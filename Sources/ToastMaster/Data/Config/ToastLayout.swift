@@ -8,5 +8,5 @@
 import Foundation
 
 public enum ToastLayout {
-    case horozintal, vertical
+    case horizontal, vertical
 }

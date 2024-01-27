@@ -9,10 +9,10 @@ import Foundation
 import UIKit
 
 public struct ToastConfig {
-    var layout: ToastLayout
-    var iconConfig: IconConfig
-    var textConfig: TextContentStyleConfig
-    var buttonConfig: TextElementConfig
+    public var layout: ToastLayout
+    public var iconConfig: IconConfig
+    public var textConfig: TextContentStyleConfig
+    public var buttonConfig: TextElementConfig
     
     public init(
         layout: ToastLayout = .vertical,

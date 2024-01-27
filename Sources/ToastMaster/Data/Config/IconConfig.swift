@@ -9,9 +9,9 @@ import Foundation
 import UIKit
 
 public struct IconConfig {
-    var size: CGSize
-    var renderingMode: UIImage.RenderingMode
-    var tintColor: UIColor
+    public var size: CGSize
+    public var renderingMode: UIImage.RenderingMode
+    public var tintColor: UIColor
 
     public static func makeDefaultConfig() -> IconConfig {
         IconConfig(

@@ -36,7 +36,7 @@ public struct TextElementConfig {
     
     public static func makeDefaultButtonConfig(layout: ToastLayout) -> TextElementConfig {
         switch layout {
-        case .horozintal:
+        case .horizontal:
             return TextElementConfig(font: horizontalButtonFont, color: linkColor)
         case .vertical:
             return TextElementConfig(font: messageFont, color: linkColor)
