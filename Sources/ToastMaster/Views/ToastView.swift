@@ -170,19 +170,18 @@ public class ToastView: NSObject {
         iconImageView.translatesAutoresizingMaskIntoConstraints = false
         self.contentStackView.translatesAutoresizingMaskIntoConstraints = false
         
-#warning("todo position to config + safearea")
         var positionConstraint: NSLayoutConstraint {
             switch self.config.displayConfig.position {
             case .top:
-                return toastContainer.topAnchor.constraint(equalTo: controller.view.topAnchor, constant: 55)
+                return toastContainer.topAnchor.constraint(equalTo: controller.view.safeAreaLayoutGuide.topAnchor, constant: self.config.containerConfig.insets.top)
             case .bottom:
-                return toastContainer.bottomAnchor.constraint(equalTo: controller.view.bottomAnchor, constant: -99)
+                return toastContainer.bottomAnchor.constraint(equalTo: controller.view.safeAreaLayoutGuide.bottomAnchor, constant: self.config.containerConfig.insets.bottom)
             }
         }
         
         NSLayoutConstraint.activate([
-            toastContainer.leadingAnchor.constraint(equalTo: controller.view.leadingAnchor, constant: 16),
-            toastContainer.trailingAnchor.constraint(equalTo: controller.view.trailingAnchor, constant: -16),
+            toastContainer.leadingAnchor.constraint(equalTo: controller.view.safeAreaLayoutGuide.leadingAnchor, constant: self.config.containerConfig.insets.left),
+            toastContainer.trailingAnchor.constraint(equalTo: controller.view.safeAreaLayoutGuide.trailingAnchor, constant: self.config.containerConfig.insets.right),
             positionConstraint,
             
             iconImageView.leadingAnchor.constraint(equalTo: toastContainer.leadingAnchor, constant: 16),
@@ -209,6 +208,7 @@ public class ToastView: NSObject {
             dismissGesture.direction = .down
         }
         dismissGesture.delegate = self
+        dismissGesture.cancelsTouchesInView = false
         
         self.toastContainer.addGestureRecognizer(dismissGesture)
         self.toastContainer.isUserInteractionEnabled = true
@@ -263,7 +263,7 @@ private extension ToastView {
         }
         
         UIView.animate(
-            withDuration: 0.5,
+            withDuration: self.config.displayConfig.animationDuration,
             delay: 0.0,
             options: .curveEaseIn,
             animations: {
@@ -275,7 +275,7 @@ private extension ToastView {
                     self?.dissmissToast(withAnimation: true, isAutoDismiss: true)
                 }
                 self.dismissWorkItem = workItem
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3.5, execute: workItem)
+                DispatchQueue.main.asyncAfter(deadline: .now() + self.config.displayConfig.toastDuration, execute: workItem)
             }
         )
     }
@@ -283,7 +283,7 @@ private extension ToastView {
     func dissmissToast(withAnimation: Bool, isAutoDismiss: Bool = false) {
         if withAnimation {
             UIView.animate(
-                withDuration: 0.5,
+                withDuration: self.config.displayConfig.animationDuration,
                 delay: 0.0,
                 options: .curveEaseOut,
                 animations: {

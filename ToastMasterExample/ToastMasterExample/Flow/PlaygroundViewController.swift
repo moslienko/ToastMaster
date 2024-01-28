@@ -22,6 +22,8 @@ class PlaygroundViewController: UIViewController {
 private extension PlaygroundViewController {
     
     func setupView() {
+        self.viewModel.toastConfig.containerConfig.insets = UIEdgeInsets(top: 0.0, left: 16.0, bottom: -70.0, right: -16.0)
+        
         self.viewModel.isShowLinks = false
         self.viewModel.toastActionButtonTitle = "Open"
         self.viewModel.toastIcon = UIImage(systemName: "info.circle.fill")
@@ -74,12 +76,12 @@ private extension PlaygroundViewController {
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: bigButton.topAnchor),
             
-            stackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 20),
-            stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 20),
-            stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -20),
+            stackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 16),
+            stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 16),
+            stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16),
             
-            bigButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            bigButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            bigButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            bigButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             bigButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             bigButton.heightAnchor.constraint(equalToConstant: 60)
         ])
@@ -178,9 +180,9 @@ private extension PlaygroundViewController {
             }
             switch val {
             case .default:
-                self.viewModel.toastConfig.containerConfig = .makeDefaultConfig()
+                self.viewModel.toastConfig.containerConfig = ContainerConfig()
             case .withBlur:
-                self.viewModel.toastConfig.containerConfig = .makeDefaultConfig()
+                self.viewModel.toastConfig.containerConfig = ContainerConfig()
                 self.viewModel.toastConfig.containerConfig.backgroundColor = .black.withAlphaComponent(0.5)
                 self.viewModel.toastConfig.containerConfig.isNeedBlur = true
                 self.viewModel.toastConfig.containerConfig.blurStyle = .dark

@@ -9,10 +9,17 @@ import Foundation
 import UIKit
 
 public struct DisplayConfig {
+    public var position: ToastPosition
+    public var toastDuration: DispatchTimeInterval
+    public var animationDuration: TimeInterval
 
-    public var position: ToastPosition = .bottom
-    
-    public static func makeDefaultConfig() -> DisplayConfig {
-        DisplayConfig()
+    public init(
+        position: ToastPosition = .bottom,
+        toastDuration: DispatchTimeInterval = .seconds(5),
+        animationDuration: TimeInterval = 0.5
+    ) {
+        self.position = position
+        self.toastDuration = toastDuration
+        self.animationDuration = animationDuration
     }
 }

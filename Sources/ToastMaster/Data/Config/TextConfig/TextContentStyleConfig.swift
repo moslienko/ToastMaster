@@ -12,10 +12,11 @@ public struct TextContentStyleConfig {
     var header: TextStyleConfig
     var message: TextStyleConfig
     
-    public static func makeDefaultConfig() -> TextContentStyleConfig {
-        TextContentStyleConfig(
-            header: TextStyleConfig.makeDefaultHeaderConfig(),
-            message: TextStyleConfig.makeDefaultMessageConfig()
-        )
+    public init(
+        header: TextStyleConfig = TextStyleConfig.makeDefaultHeaderConfig(),
+        message: TextStyleConfig = TextStyleConfig.makeDefaultMessageConfig()
+    ) {
+        self.header = header
+        self.message = message
     }
 }

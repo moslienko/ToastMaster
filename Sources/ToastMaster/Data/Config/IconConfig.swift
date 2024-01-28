@@ -13,11 +13,13 @@ public struct IconConfig {
     public var renderingMode: UIImage.RenderingMode
     public var tintColor: UIColor
 
-    public static func makeDefaultConfig() -> IconConfig {
-        IconConfig(
-            size: CGSize(width: 28.0, height: 28.0),
-            renderingMode: .alwaysTemplate,
-            tintColor: .white
-        )
+    public init(
+        size: CGSize = CGSize(width: 28.0, height: 28.0),
+        renderingMode: UIImage.RenderingMode = .alwaysTemplate,
+        tintColor: UIColor = .white
+    ) {
+        self.size = size
+        self.renderingMode = renderingMode
+        self.tintColor = tintColor
     }
 }

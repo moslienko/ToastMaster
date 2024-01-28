@@ -18,10 +18,10 @@ public struct ToastConfig {
     
     public init(
         layout: ToastLayout = .vertical,
-        containerConfig: ContainerConfig = ContainerConfig.makeDefaultConfig(),
-        displayConfig: DisplayConfig = DisplayConfig.makeDefaultConfig(),
-        iconConfig: IconConfig = IconConfig.makeDefaultConfig(),
-        textConfig: TextContentStyleConfig = TextContentStyleConfig.makeDefaultConfig(),
+        containerConfig: ContainerConfig = ContainerConfig(),
+        displayConfig: DisplayConfig = DisplayConfig(),
+        iconConfig: IconConfig = IconConfig(),
+        textConfig: TextContentStyleConfig = TextContentStyleConfig(),
         buttonConfig: TextElementConfig? = nil
     ) {
         self.layout = layout
