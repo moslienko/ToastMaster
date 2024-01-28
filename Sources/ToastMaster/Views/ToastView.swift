@@ -221,12 +221,13 @@ public class ToastView: NSObject {
 private extension ToastView {
     
     func presentToast() {
+        self.toastContainer.layoutIfNeeded()
         var initialFrame: CGRect {
             switch self.config.displayConfig.position {
             case .top:
                 return CGRect(
                     x: 0,
-                    y: 0,
+                    y:  -self.toastContainer.frame.height,
                     width: UIScreen.main.bounds.width,
                     height: self.toastContainer.frame.height
                 )
@@ -248,7 +249,7 @@ private extension ToastView {
             case .top:
                 return CGRect(
                     x: 0,
-                    y: UIScreen.main.bounds.height - self.toastContainer.frame.height - 200,
+                    y: 0,
                     width: UIScreen.main.bounds.width,
                     height: self.toastContainer.frame.height
                 )
