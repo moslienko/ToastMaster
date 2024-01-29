@@ -54,7 +54,7 @@ public class ToastView: NSObject, ToastProtocol {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 0.0
-        stackView.alignment = .center //l
+        stackView.alignment = .center
         stackView.distribution = .fill
         
         return stackView

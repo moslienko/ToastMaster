@@ -8,14 +8,14 @@
 import Foundation
 import UIKit
 
-public protocol ToastPresentable {
+protocol ToastPresentable {
     func present()
     func dissmiss(withAnimation: Bool)
     
     var didToastPresented: (() -> Void)? { get }
 }
 
-public class ToastPresentationService: ToastPresentable {
+class ToastPresentationService: ToastPresentable {
     
     private var toastContainer: UIView
     private var config: ToastConfig
@@ -29,53 +29,16 @@ public class ToastPresentationService: ToastPresentable {
     
     public func present() {
         self.toastContainer.layoutIfNeeded()
-        var initialFrame: CGRect {
-            switch self.config.displayConfig.position {
-            case .top:
-                return CGRect(
-                    x: 0,
-                    y:  -self.toastContainer.frame.height,
-                    width: UIScreen.main.bounds.width,
-                    height: self.toastContainer.frame.height
-                )
-            case .bottom:
-                return CGRect(
-                    x: 0,
-                    y: UIScreen.main.bounds.height,
-                    width: UIScreen.main.bounds.width,
-                    height: self.toastContainer.frame.height
-                )
-            }
-        }
         
-        self.toastContainer.frame = initialFrame
+        self.toastContainer.frame = self.initialFrame
         self.toastContainer.alpha = 0.0
-        
-        var finalFrame: CGRect {
-            switch self.config.displayConfig.position {
-            case .top:
-                return CGRect(
-                    x: 0,
-                    y: 0,
-                    width: UIScreen.main.bounds.width,
-                    height: self.toastContainer.frame.height
-                )
-            case .bottom:
-                return CGRect(
-                    x: 0,
-                    y: UIScreen.main.bounds.height - self.toastContainer.frame.height,
-                    width: UIScreen.main.bounds.width,
-                    height: self.toastContainer.frame.height
-                )
-            }
-        }
         
         UIView.animate(
             withDuration: self.config.displayConfig.animationDuration,
             delay: 0.0,
             options: .curveEaseIn,
             animations: {
-                self.toastContainer.frame = finalFrame
+                self.toastContainer.frame = self.finalFrame
                 self.toastContainer.alpha = 1.0
             },
             completion: { _ in
@@ -109,4 +72,47 @@ public class ToastPresentationService: ToastPresentable {
         
         ToastView.shared.dismissWorkItem?.cancel()
     }
+}
+
+private extension ToastPresentationService {
+    
+    var initialFrame: CGRect {
+        switch self.config.displayConfig.position {
+        case .top:
+            return CGRect(
+                x: 0,
+                y:  -self.toastContainer.frame.height,
+                width: UIScreen.main.bounds.width,
+                height: self.toastContainer.frame.height
+            )
+        case .bottom:
+            return CGRect(
+                x: 0,
+                y: UIScreen.main.bounds.height,
+                width: UIScreen.main.bounds.width,
+                height: self.toastContainer.frame.height
+            )
+        }
+    }
+    
+    
+    var finalFrame: CGRect {
+        switch self.config.displayConfig.position {
+        case .top:
+            return CGRect(
+                x: 0,
+                y: 0,
+                width: UIScreen.main.bounds.width,
+                height: self.toastContainer.frame.height
+            )
+        case .bottom:
+            return CGRect(
+                x: 0,
+                y: UIScreen.main.bounds.height - self.toastContainer.frame.height,
+                width: UIScreen.main.bounds.width,
+                height: self.toastContainer.frame.height
+            )
+        }
+    }
+    
 }

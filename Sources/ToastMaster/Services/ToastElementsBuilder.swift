@@ -8,13 +8,13 @@
 import Foundation
 import UIKit
 
-public protocol ToastElementsMaker {    
+protocol ToastElementsMaker {
     func createIconImageView(icon: UIImage?) -> UIImageView
     func createHeaderTextView(header: String?, delegate: UITextViewDelegate) -> UITextView
     func createMessageTextView(message: String?, delegate: UITextViewDelegate) -> UITextView
 }
 
-public class ToastElementsBuilder: ToastElementsMaker {
+class ToastElementsBuilder: ToastElementsMaker {
     
     private var config: ToastConfig
     
