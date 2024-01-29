@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+/// Settings for defining the toast container style
 public struct ContainerConfig {
     public var backgroundColor: UIColor
     public var cornerRadius: CGFloat

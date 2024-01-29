@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Config to set the style for plain text, and for links
 public struct TextStyleConfig {
     var regularText: TextElementConfig
     var linkText: TextElementConfig

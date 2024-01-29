@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+/// Common config for header and message styles
 public struct TextContentStyleConfig {
     var header: TextStyleConfig
     var message: TextStyleConfig

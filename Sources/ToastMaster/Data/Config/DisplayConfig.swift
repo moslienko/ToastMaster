@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+/// Config defining positioning of toast on the screen during displaying
 public struct DisplayConfig {
     public var position: ToastPosition
     public var toastDuration: DispatchTimeInterval

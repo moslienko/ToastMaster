@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+/// Config for toast icon
 public struct IconConfig {
     public var size: CGSize
     public var renderingMode: UIImage.RenderingMode

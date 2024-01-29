@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+/// Style for text labels
 public struct TextElementConfig {
     var font: UIFont
     var color: UIColor

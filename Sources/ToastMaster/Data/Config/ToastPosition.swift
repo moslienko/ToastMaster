@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// The position on the screen in which the toast will be displayed
 public enum ToastPosition {
     case top, bottom
 }

@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+/// Basic toast config
 public struct ToastConfig {
     public var layout: ToastLayout
     public var containerConfig: ContainerConfig

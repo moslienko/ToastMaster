@@ -25,7 +25,7 @@ public class ToastView: NSObject, ToastProtocol {
     public var config = ToastConfig()
     public var dismissWorkItem: DispatchWorkItem?
     
-    var presentationService: ToastPresentationService {
+    private var presentationService: ToastPresentationService {
         let service = ToastPresentationService(container: toastContainer, config: config)
         service.didToastPresented = { [weak self] in
             self?.setupAutoDismissToast()
@@ -82,6 +82,15 @@ public class ToastView: NSObject, ToastProtocol {
         return button
     }()
     
+    /// Show toast view
+    /// - Parameters:
+    ///   - header: Toast title, displayed first
+    ///   - message: Toast message, displayed second
+    ///   - icon: Icon, displayd in left part of toast
+    ///   - actionButtonTitle: Button text, if the button is not needed, do not pass the argument
+    ///   - controller: Parent view controller
+    ///   - buttonTapped: Handle button tap event
+    ///   - linkTapped: Handle link tap event
     public func show(header: String?, message: String?, icon: UIImage?, actionButtonTitle: String?, controller: UIViewController, buttonTapped: (() -> Void)?, linkTapped: ((String) -> Void)?) {
         self.presentationService.dissmiss(withAnimation: false)
         
