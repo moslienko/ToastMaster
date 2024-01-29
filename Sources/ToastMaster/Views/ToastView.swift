@@ -7,7 +7,15 @@
 
 import UIKit
 
-public class ToastView: NSObject {
+public protocol ToastProtocol {
+    var config: ToastConfig { get set }
+    var buttonTapped: (() -> Void)? { get set }
+    var linkTapped: ((String) -> Void)? { get set }
+    
+    func show(header: String?, message: String?, icon: UIImage?, actionButtonTitle: String?, controller: UIViewController, buttonTapped: (() -> Void)?, linkTapped: ((String) -> Void)?)
+}
+
+public class ToastView: NSObject, ToastProtocol {
     
     public static let shared = ToastView()
     
@@ -15,8 +23,18 @@ public class ToastView: NSObject {
     
     // MARK: - Params
     public var config = ToastConfig()
-    private var presentationService: ToastPresentationService {
-        ToastPresentationService(container: toastContainer, config: config)
+    public var dismissWorkItem: DispatchWorkItem?
+    
+    var presentationService: ToastPresentationService {
+        let service = ToastPresentationService(container: toastContainer, config: config)
+        service.didToastPresented = { [weak self] in
+            self?.setupAutoDismissToast()
+        }
+        
+        return service
+    }
+    private var elementsBuilder: ToastElementsMaker {
+        ToastElementsBuilder(config: config)
     }
     
     // MARK: - Callbacks
@@ -64,18 +82,11 @@ public class ToastView: NSObject {
         return button
     }()
     
-    public func show(header: String?, message: String?, icon: UIImage?, actionButtonTitle: String?, controller: UIViewController, buttonTapped: (() -> Void)?, linkTapped: ((String) -> Void)?) {        
+    public func show(header: String?, message: String?, icon: UIImage?, actionButtonTitle: String?, controller: UIViewController, buttonTapped: (() -> Void)?, linkTapped: ((String) -> Void)?) {
         self.presentationService.dissmiss(withAnimation: false)
-
+        
         self.buttonTapped = buttonTapped
         self.linkTapped = linkTapped
-
-        switch config.layout {
-        case .horizontal:
-            self.contentStackView.axis = .horizontal
-        case .vertical:
-            self.contentStackView.axis = .vertical
-        }
         
         self.toastContainer.backgroundColor = config.containerConfig.backgroundColor
         self.toastContainer.layer.cornerRadius = config.containerConfig.cornerRadius
@@ -83,75 +94,53 @@ public class ToastView: NSObject {
         self.actionButton.setTitle(actionButtonTitle, for: [])
         self.actionButton.isHidden = actionButtonTitle == nil
         
-        let iconImageView: UIImageView = {
-            let view = UIImageView()
-            view.tintColor = config.iconConfig.tintColor
-            view.image = icon?.withRenderingMode(config.iconConfig.renderingMode)
-            view.isHidden = icon == nil
-            
-            return view
-        }()
+        self.setupBlurIfNeeded()
+        
+        let iconImageView = self.elementsBuilder.createIconImageView(icon: icon)
+        let headerTextView = self.elementsBuilder.createHeaderTextView(header: header, delegate: self)
+        let messageTextView = self.elementsBuilder.createMessageTextView(message: message, delegate: self)
+        
+        setupConstraints(headerTextView, header, messageTextView, message, iconImageView, icon, controller)
+        self.setupGesture()
+        
+        self.presentationService.present()
+    }
+}
+
+// MARK: - Setup
+private extension ToastView {
+    
+    func setupGesture() {
+        if let dismissGesture = self.toastContainer.gestureRecognizers?.first(where: { $0 is UISwipeGestureRecognizer }) as? UISwipeGestureRecognizer {
+            self.toastContainer.removeGestureRecognizer(dismissGesture)
+        }
+        
+        let dismissGesture = UISwipeGestureRecognizer(target: self, action: #selector(dismissView(gesture:)))
+        switch self.config.displayConfig.position {
+        case .top:
+            dismissGesture.direction = .up
+        case .bottom:
+            dismissGesture.direction = .down
+        }
+        dismissGesture.delegate = self
+        dismissGesture.cancelsTouchesInView = false
+        
+        self.toastContainer.addGestureRecognizer(dismissGesture)
+        self.toastContainer.isUserInteractionEnabled = true
+    }
+    
+    func setupConstraints(_ headerTextView: UITextView, _ header: String?, _ messageTextView: UITextView, _ message: String?, _ iconImageView: UIImageView, _ icon: UIImage?, _ controller: UIViewController) {
+        switch config.layout {
+        case .horizontal:
+            self.contentStackView.axis = .horizontal
+        case .vertical:
+            self.contentStackView.axis = .vertical
+        }
+        
         
         self.toastContainer.subviews.forEach({ $0.removeFromSuperview() })
         self.contentStackView.arrangedSubviews.forEach({ $0.removeFromSuperview() })
         self.textStackView.arrangedSubviews.forEach({ $0.removeFromSuperview() })
-        
-        if self.config.containerConfig.isNeedBlur {
-            let blurEffect = UIBlurEffect(style: self.config.containerConfig.blurStyle ?? .dark)
-            let blurView = UIVisualEffectView(effect: blurEffect)
-            blurView.frame = self.toastContainer.bounds
-            blurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-            blurView.layer.opacity = 0.75
-            self.toastContainer.addSubview(blurView)
-        }
-        
-        let headerTextView: UITextView = {
-            let textView = UITextView()
-            textView.attributedText = header?.htmlConvertToAttributedString
-            textView.font = config.textConfig.header.regularText.font
-            textView.textColor = config.textConfig.header.regularText.color
-            textView.backgroundColor = .clear
-            textView.textAlignment = .left
-            textView.textContainer.lineFragmentPadding = 0
-            textView.textContainerInset = .zero
-            
-            textView.linkTextAttributes = [
-                .font: config.textConfig.header.linkText.font,
-                .foregroundColor: config.textConfig.header.linkText.color,
-                .underlineStyle: 0
-            ]
-            textView.isEditable = false
-            textView.isScrollEnabled = false
-            textView.isUserInteractionEnabled = true
-            textView.dataDetectorTypes = .link
-            textView.delegate = self
-            
-            return textView
-        }()
-        
-        let messageTextView: UITextView = {
-            let textView = UITextView()
-            textView.attributedText = message?.htmlConvertToAttributedString
-            textView.font = config.textConfig.message.regularText.font
-            textView.textColor = config.textConfig.message.regularText.color
-            textView.backgroundColor = .clear
-            textView.textAlignment = .left
-            textView.textContainer.lineFragmentPadding = 0
-            textView.textContainerInset = .zero
-            
-            textView.linkTextAttributes = [
-                .font: config.textConfig.message.linkText.font,
-                .foregroundColor: config.textConfig.message.linkText.color,
-                .underlineStyle: 0
-            ]
-            textView.isEditable = false
-            textView.isScrollEnabled = false
-            textView.isUserInteractionEnabled = true
-            textView.dataDetectorTypes = .link
-            textView.delegate = self
-            
-            return textView
-        }()
         
         self.textStackView.addArrangedSubview(headerTextView)
         headerTextView.isHidden = header == nil
@@ -198,25 +187,27 @@ public class ToastView: NSObject {
             self.contentStackView.trailingAnchor.constraint(equalTo: toastContainer.trailingAnchor, constant: -16),
             self.contentStackView.leadingAnchor.constraint(equalTo: toastContainer.leadingAnchor, constant:  icon != nil ? 54 : 16)
         ])
-        
-        if let dismissGesture = self.toastContainer.gestureRecognizers?.first(where: { $0 is UISwipeGestureRecognizer }) as? UISwipeGestureRecognizer {
-            self.toastContainer.removeGestureRecognizer(dismissGesture)
+    }
+    
+    func setupBlurIfNeeded() {
+        guard self.config.containerConfig.isNeedBlur else {
+            return
         }
-        
-        let dismissGesture = UISwipeGestureRecognizer(target: self, action: #selector(dismissView(gesture:)))
-        switch self.config.displayConfig.position {
-        case .top:
-            dismissGesture.direction = .up
-        case .bottom:
-            dismissGesture.direction = .down
+        let blurEffect = UIBlurEffect(style: self.config.containerConfig.blurStyle ?? .dark)
+        let blurView = UIVisualEffectView(effect: blurEffect)
+        blurView.frame = self.toastContainer.bounds
+        blurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        blurView.layer.opacity = 0.75
+        self.toastContainer.addSubview(blurView)
+    }
+    
+   func setupAutoDismissToast() {
+        let workItem = DispatchWorkItem { [weak self] in
+            self?.presentationService.dissmiss(withAnimation: true)
         }
-        dismissGesture.delegate = self
-        dismissGesture.cancelsTouchesInView = false
+        ToastView.shared.dismissWorkItem = workItem
         
-        self.toastContainer.addGestureRecognizer(dismissGesture)
-        self.toastContainer.isUserInteractionEnabled = true
-        
-        self.presentationService.present()
+        DispatchQueue.main.asyncAfter(deadline: .now() + self.config.displayConfig.toastDuration, execute: workItem)
     }
 }
 

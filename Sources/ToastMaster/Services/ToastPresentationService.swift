@@ -10,14 +10,17 @@ import UIKit
 
 public protocol ToastPresentable {
     func present()
-    func dissmiss(withAnimation: Bool, isAutoDismiss: Bool)
+    func dissmiss(withAnimation: Bool)
+    
+    var didToastPresented: (() -> Void)? { get }
 }
 
 public class ToastPresentationService: ToastPresentable {
     
     private var toastContainer: UIView
     private var config: ToastConfig
-    private var dismissWorkItem: DispatchWorkItem?
+    
+    public var didToastPresented: (() -> Void)?
     
     public init(container: UIView, config: ToastConfig) {
         self.toastContainer = container
@@ -76,16 +79,12 @@ public class ToastPresentationService: ToastPresentable {
                 self.toastContainer.alpha = 1.0
             },
             completion: { _ in
-                let workItem = DispatchWorkItem { [weak self] in
-                    self?.dissmiss(withAnimation: true, isAutoDismiss: true)
-                }
-                self.dismissWorkItem = workItem
-                DispatchQueue.main.asyncAfter(deadline: .now() + self.config.displayConfig.toastDuration, execute: workItem)
+                self.didToastPresented?()
             }
         )
     }
     
-    public func dissmiss(withAnimation: Bool, isAutoDismiss: Bool = false) {
+    public func dissmiss(withAnimation: Bool) {
         if withAnimation {
             UIView.animate(
                 withDuration: self.config.displayConfig.animationDuration,
@@ -108,8 +107,6 @@ public class ToastPresentationService: ToastPresentable {
             self.toastContainer.removeFromSuperview()
         }
         
-        //if isAutoDismiss {
-        dismissWorkItem?.cancel()
-        // }
+        ToastView.shared.dismissWorkItem?.cancel()
     }
 }
