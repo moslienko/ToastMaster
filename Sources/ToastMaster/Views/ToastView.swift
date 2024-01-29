@@ -180,6 +180,13 @@ private extension ToastView {
             }
         }
         
+        var contentLeftConstraint: NSLayoutConstraint {
+            if icon != nil {
+                return self.contentStackView.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 13)
+            }
+            return self.contentStackView.leadingAnchor.constraint(equalTo: toastContainer.leadingAnchor, constant: 16)
+        }
+        
         NSLayoutConstraint.activate([
             toastContainer.leadingAnchor.constraint(equalTo: controller.view.safeAreaLayoutGuide.leadingAnchor, constant: self.config.containerConfig.insets.left),
             toastContainer.trailingAnchor.constraint(equalTo: controller.view.safeAreaLayoutGuide.trailingAnchor, constant: self.config.containerConfig.insets.right),
@@ -194,7 +201,7 @@ private extension ToastView {
             self.contentStackView.bottomAnchor.constraint(greaterThanOrEqualTo: toastContainer.bottomAnchor, constant: -9),
             self.contentStackView.centerYAnchor.constraint(equalTo: toastContainer.centerYAnchor),
             self.contentStackView.trailingAnchor.constraint(equalTo: toastContainer.trailingAnchor, constant: -16),
-            self.contentStackView.leadingAnchor.constraint(equalTo: toastContainer.leadingAnchor, constant:  icon != nil ? 54 : 16)
+           contentLeftConstraint
         ])
     }
     
