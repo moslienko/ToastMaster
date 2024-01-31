@@ -7,9 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		955AE47A2B638A8800A66FBC /* ToastParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955AE4792B638A8800A66FBC /* ToastParams.swift */; };
+		9562456B2B64C61F007CA45C /* PlaygroundViewControllerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9562456A2B64C61F007CA45C /* PlaygroundViewControllerModel.swift */; };
 		956BD34D2B42852400E6F6B4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 956BD34C2B42852400E6F6B4 /* AppDelegate.swift */; };
 		956BD34F2B42852400E6F6B4 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 956BD34E2B42852400E6F6B4 /* SceneDelegate.swift */; };
-		956BD3512B42852400E6F6B4 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 956BD3502B42852400E6F6B4 /* ViewController.swift */; };
+		956BD3512B42852400E6F6B4 /* PlaygroundViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 956BD3502B42852400E6F6B4 /* PlaygroundViewController.swift */; };
 		956BD3542B42852400E6F6B4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 956BD3522B42852400E6F6B4 /* Main.storyboard */; };
 		956BD3562B42852600E6F6B4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 956BD3552B42852600E6F6B4 /* Assets.xcassets */; };
 		956BD3592B42852600E6F6B4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 956BD3572B42852600E6F6B4 /* LaunchScreen.storyboard */; };
@@ -17,10 +19,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		955AE4792B638A8800A66FBC /* ToastParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastParams.swift; sourceTree = "<group>"; };
+		9562456A2B64C61F007CA45C /* PlaygroundViewControllerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundViewControllerModel.swift; sourceTree = "<group>"; };
 		956BD3492B42852400E6F6B4 /* ToastMasterExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToastMasterExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		956BD34C2B42852400E6F6B4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		956BD34E2B42852400E6F6B4 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		956BD3502B42852400E6F6B4 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		956BD3502B42852400E6F6B4 /* PlaygroundViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundViewController.swift; sourceTree = "<group>"; };
 		956BD3532B42852400E6F6B4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		956BD3552B42852600E6F6B4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		956BD3582B42852600E6F6B4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -40,6 +44,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		955AE4762B638A6800A66FBC /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				955AE4792B638A8800A66FBC /* ToastParams.swift */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		955AE4772B638A6F00A66FBC /* Flow */ = {
+			isa = PBXGroup;
+			children = (
+				956BD3502B42852400E6F6B4 /* PlaygroundViewController.swift */,
+				9562456A2B64C61F007CA45C /* PlaygroundViewControllerModel.swift */,
+			);
+			path = Flow;
+			sourceTree = "<group>";
+		};
 		956BD3402B42852400E6F6B4 = {
 			isa = PBXGroup;
 			children = (
@@ -61,9 +82,10 @@
 		956BD34B2B42852400E6F6B4 /* ToastMasterExample */ = {
 			isa = PBXGroup;
 			children = (
+				955AE4772B638A6F00A66FBC /* Flow */,
+				955AE4762B638A6800A66FBC /* Data */,
 				956BD34C2B42852400E6F6B4 /* AppDelegate.swift */,
 				956BD34E2B42852400E6F6B4 /* SceneDelegate.swift */,
-				956BD3502B42852400E6F6B4 /* ViewController.swift */,
 				956BD3522B42852400E6F6B4 /* Main.storyboard */,
 				956BD3552B42852600E6F6B4 /* Assets.xcassets */,
 				956BD3572B42852600E6F6B4 /* LaunchScreen.storyboard */,
@@ -161,9 +183,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				956BD3512B42852400E6F6B4 /* ViewController.swift in Sources */,
+				956BD3512B42852400E6F6B4 /* PlaygroundViewController.swift in Sources */,
 				956BD34D2B42852400E6F6B4 /* AppDelegate.swift in Sources */,
 				956BD34F2B42852400E6F6B4 /* SceneDelegate.swift in Sources */,
+				9562456B2B64C61F007CA45C /* PlaygroundViewControllerModel.swift in Sources */,
+				955AE47A2B638A8800A66FBC /* ToastParams.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
