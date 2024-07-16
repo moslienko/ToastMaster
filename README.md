@@ -1,5 +1,5 @@
 <p align="center">
-   <img width="200" src="https://raw.githubusercontent.com/SvenTiigi/SwiftKit/gh-pages/readMeAssets/SwiftKitLogo.png" alt="ToastMaster Logo">
+   <img width="200" src="https://moslienko.github.io/Assets/ToastMaster/sdk.png" alt="ToastMaster Logo">
 </p>
 
 <p align="center">
@@ -18,7 +18,7 @@ UIKit library for creating customizable Telegram-style toasts
 </p>
 
 <p align="center">
-   <img src="https://i.imgur.com/kGPuzOv.png" alt="Screenshot">
+   <img src="https://moslienko.github.io/Assets/ToastMaster/screenshots.png" alt="Screenshot">
 </p>
 
 ## Example
